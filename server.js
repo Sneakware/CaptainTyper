@@ -17,3 +17,19 @@ server
     if (err) { return console.log(err); }
     console.log('Listening at localhost:' + port);
   });
+
+var socketServer = require('http').createServer();
+var io = require('socket.io')(socketServer);
+
+io.on('connection', function (socket){
+  console.log(socket);
+
+  socket.on('event', function (data) {
+  });
+
+  socket.on('disconnect', function () {
+  });
+
+});
+
+socketServer.listen(3000);

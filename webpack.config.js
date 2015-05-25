@@ -18,25 +18,19 @@ module.exports = {
 
   module: {
     loaders: [
-
-      // ES6 modules
       {
         test: /\.js$/,
         include: [
           path.resolve(__dirname, 'scripts')
         ],
-        loader: 'babel'
-      },
-
-      // Stylesheets
-      {
+        loader: 'jsx-loader?insertPragma=React.DOM&harmony'
+      }, {
         test: /\.css$/,
         include: [
           path.resolve(__dirname, 'styles')
         ],
         loader: 'style-loader!css-loader'
       }
-
     ]
   }
 
