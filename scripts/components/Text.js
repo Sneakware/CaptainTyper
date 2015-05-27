@@ -1,10 +1,17 @@
 React = require('react');
+moment = require('moment');
 Utils = require('../Utils');
+
+var backColor = '#002b36';
+var blueColor = '#268bd2';
+var greenColor = '#859900';
 
 module.exports = class Text extends React.Component {
 
-  getWpm (keyCount, errorCount) {
-    return ((keyCount / 5) - errorCount) / time;
+  getWpm () {
+    var time = moment().diff(this.state.startedAt, 's');
+    var keyCount = this.state.text.slice(0, this.state.currentIndex).length;
+    return Math.round((keyCount / 5) / (time / 60));
   }
 
   clear () {
@@ -12,18 +19,28 @@ module.exports = class Text extends React.Component {
   }
 
   createCursor () {
-    this.ctx.fillStyle = 'green';
-    var width = this.ctx.measureText(this.state.text[this.state.currentIndex]).width;
-    this.ctx.fillRect(10 + width, this.canvas.height / 2 + 10, this.state.currentIndex * width, 5);
+    this.ctx.fillStyle = (this.state.position === 0) ? blueColor : greenColor;
+    var word = this.state.text.split(' ')[this.state.currentWord];
+    var width = this.ctx.measureText(word.slice(0, this.state.position ? this.state.position : 1)).width;
+    this.ctx.fillRect(30, this.canvas.height / 2 + 10, width, 5);
   }
   
   keyPress (e) {
     var c = String.fromCharCode(e.keyCode);
     if (c === this.state.text[this.state.currentIndex]) {
-      this.setState({ currentIndex: this.state.currentIndex + 1 });
+      this.setState({
+        currentIndex: this.state.currentIndex + 1,
+        currentWord: c === ' ' ? this.state.currentWord + 1 : this.state.currentWord,
+        position: c === ' ' ? 0 : this.state.position + 1
+      });
     } else {
-      this.setState({ currentIndex: 0 });
+      this.setState({ errorCount: this.state.errorCount + 1 });
     }
+
+    if (!this.state.startedAt) {
+      this.setState({ startedAt: moment() });
+    }
+    console.log(this.getWpm());
   }
 
   draw () {
@@ -31,18 +48,19 @@ module.exports = class Text extends React.Component {
 
     var pad = 30;
     var boxHeight = this.canvas.height - 20;
+    var typed = this.state.text.split(' ').splice(0, this.state.currentWord).join(' ') + (this.state.currentWord ? ' ' : '');
+    var width = this.ctx.measureText(typed).width;
 
-    this.ctx.fillStyle = '#000';
+    this.ctx.fillStyle = backColor;
     this.ctx.fillRect(10, 10, this.canvas.width - 20, boxHeight);
-    this.ctx.fillStyle = '#ccc';
 
     this.ctx.globalCompositeOperation = 'source-atop';
     this.ctx.fillStyle = 'white';
 
     this.ctx.font = '30px monospace';
-    this.ctx.fillText(this.state.text, pad, boxHeight / 2 + 10);
+    this.ctx.fillText(this.state.text, pad - width, boxHeight / 2 + 10);
 
-    this.ctx.fillStyle = '#000';
+    this.ctx.fillStyle = backColor;
     this.ctx.fillRect(this.canvas.width - pad, 0, pad, this.canvas.height);
 
     this.ctx.globalCompositeOperation = 'source-over';
@@ -58,7 +76,13 @@ module.exports = class Text extends React.Component {
     this.canvas.height = 200;
 
     Utils.doRequest('http://restock.io/api/S').then(function (res) {
-      this.setState({ text: res, currentIndex: 0 });
+      this.setState({
+        text: res,
+        currentIndex: 0,
+        currentWord: 0,
+        position: 0,
+        errorCount: 0
+      });
     }.bind(this));
 
     window.addEventListener('keypress', this.keyPress.bind(this), false);
