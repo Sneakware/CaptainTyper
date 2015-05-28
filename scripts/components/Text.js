@@ -1,10 +1,6 @@
-React = require('react');
-moment = require('moment');
-Utils = require('../Utils');
-
-var backColor = '#002b36';
-var blueColor = '#268bd2';
-var greenColor = '#859900';
+var React = require('react');
+var moment = require('moment');
+var Utils = require('../Utils');
 
 module.exports = class Text extends React.Component {
 
@@ -19,7 +15,7 @@ module.exports = class Text extends React.Component {
   }
 
   createCursor () {
-    this.ctx.fillStyle = (this.state.position === 0) ? blueColor : greenColor;
+    this.ctx.fillStyle = (this.state.position === 0) ? Utils.colors('blue') : Utils.colors('green');
     var word = this.state.text.split(' ')[this.state.currentWord];
     var width = this.ctx.measureText(word.slice(0, this.state.position ? this.state.position : 1)).width;
     this.ctx.fillRect(30, this.canvas.height / 2 + 10, width, 5);
@@ -28,11 +24,22 @@ module.exports = class Text extends React.Component {
   keyPress (e) {
     var c = String.fromCharCode(e.keyCode);
     if (c === this.state.text[this.state.currentIndex]) {
+      var word = this.state.text.split(' ')[this.state.currentWord];
+
       this.setState({
         currentIndex: this.state.currentIndex + 1,
         currentWord: c === ' ' ? this.state.currentWord + 1 : this.state.currentWord,
         position: c === ' ' ? 0 : this.state.position + 1
       });
+
+      if (c === ' ') {
+        Utils.dispatcher().dispatch({
+          type: 'wordTyped',
+          player: 'one',
+          target: 'two',
+          damage: word.length
+        });
+      }
     } else {
       this.setState({ errorCount: this.state.errorCount + 1 });
     }
@@ -40,7 +47,6 @@ module.exports = class Text extends React.Component {
     if (!this.state.startedAt) {
       this.setState({ startedAt: moment() });
     }
-    console.log(this.getWpm());
   }
 
   draw () {
@@ -51,7 +57,7 @@ module.exports = class Text extends React.Component {
     var typed = this.state.text.split(' ').splice(0, this.state.currentWord).join(' ') + (this.state.currentWord ? ' ' : '');
     var width = this.ctx.measureText(typed).width;
 
-    this.ctx.fillStyle = backColor;
+    this.ctx.fillStyle = Utils.colors('back');
     this.ctx.fillRect(10, 10, this.canvas.width - 20, boxHeight);
 
     this.ctx.globalCompositeOperation = 'source-atop';
@@ -60,7 +66,7 @@ module.exports = class Text extends React.Component {
     this.ctx.font = '30px monospace';
     this.ctx.fillText(this.state.text, pad - width, boxHeight / 2 + 10);
 
-    this.ctx.fillStyle = backColor;
+    this.ctx.fillStyle = Utils.colors('back');
     this.ctx.fillRect(this.canvas.width - pad, 0, pad, this.canvas.height);
 
     this.ctx.globalCompositeOperation = 'source-over';

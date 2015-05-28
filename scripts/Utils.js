@@ -1,6 +1,14 @@
-React = require('react');
+var Flux = require('flux');
+var dispatcher = new Flux.Dispatcher();
 
 module.exports = {
+
+  /**
+   * Return a new dispatcher
+   */
+  dispatcher () {
+    return dispatcher;
+  },
 
   /**
    * Make a request to an external service using a GET xhr
@@ -28,6 +36,14 @@ module.exports = {
 
     });
 
+  },
+
+  colors (key) {
+    return {
+      back: '#002b36',
+      blue: '#268bd2',
+      green: '#859900'
+    }[key] || 'red';
   }
 
 };
