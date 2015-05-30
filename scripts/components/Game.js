@@ -1,5 +1,4 @@
 var React = require('react');
-var Utils = require('../Utils');
 
 var Player = require('./Player');
 
@@ -30,11 +29,6 @@ module.exports = class Game extends React.Component {
 
     this.teams = [{ id: 1, color: 'white' }, { id: 2, color: 'red' }];
     this.players = [new Player('player one', 100, this.teams[0], this), new Player('player two', 1500, this.teams[1], this)];
-
-    Utils.dispatcher().register(function (msg) {
-      if (msg.type !== 'wordTyped') { return ; }
-      console.log(msg);
-    }.bind(this));
   }
 
   render () {
