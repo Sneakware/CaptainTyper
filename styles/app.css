@@ -7,3 +7,12 @@
 canvas {
   display: block;
 }
+
+.game-container {
+  position: relative;
+  height: 600px;
+}
+
+.game-container canvas {
+  position: absolute;
+}

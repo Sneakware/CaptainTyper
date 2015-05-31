@@ -35,8 +35,7 @@ module.exports = class Text extends React.Component {
       if (c === ' ') {
         Utils.dispatcher().dispatch({
           type: 'wordTyped',
-          player: 'one',
-          target: 'two',
+          target: 1,
           damage: word.length
         });
       }
