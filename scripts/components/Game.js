@@ -22,7 +22,7 @@ module.exports = class Game extends React.Component {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.bullets.forEach(bullet => {
       this.ctx.fillStyle = 'white';
-      this.ctx.fillRect(bullet.x, bullet.y, 10, 10);
+      this.ctx.fillRect(bullet.x, bullet.y, 5, 5);
     });
   }
 
@@ -51,7 +51,7 @@ module.exports = class Game extends React.Component {
 
     Utils.dispatcher().register((msg) => {
       if (msg.type === 'wordTyped') {
-        this.bullets.push(new Bullet(this.currentPlayer, this.players[msg.target], msg.damage));
+        this.bullets.push(new Bullet(this.currentPlayer, this.players[msg.target], msg.damage, this));
       }
     });
     

@@ -24,26 +24,34 @@ module.exports = class Bullet {
     return this.path.getPointAtLength(this.pathLength * percent);
   }
 
+  randomValue (min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
   createPath () {
     this.path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
-    this.path.setAttribute('d', 'M' + this.sender.x.toString() + ',' + this.sender.y.toString() + 'C' +
-    this.sender.x.toString() + ',' + (this.sender.y - 200).toString() + ' ' +
-    this.receiver.x.toString() + ',' + (this.receiver.y - 200).toString() + ' ' +
-    this.receiver.x.toString() + ',' + this.receiver.y.toString());
+    this.path.setAttribute('d', 'M' + this.x.toString() + ',' + this.y.toString() + 'C' +
+    (this.x + (this.ally ? 30 : - 30)).toString() + ',' + (this.y - (this.ally ? 50 : -50)).toString() + ' ' +
+    this.randomValue(this.receiver.x + (this.ally ? - 100 : 100), this.receiver.x + 10).toString() + ',' +
+    (this.receiver.y - this.randomValue(100, 200)).toString() + ' ' +
+    this.randomValue(this.receiver.x + (this.ally ? - 100 : 100), this.receiver.x + 10).toString() + ',' +
+    (this.receiver.y - 10).toString());
 
     this.pathLength = this.path.getTotalLength();
   }
 
-  constructor (player, target, damage) {
+  constructor (player, target, damage, game) {
 
     this.timer = null;
     this.damage = damage;
     this.sender = player;
     this.receiver = target;
+    this.game = game;
 
-    this.x = this.sender.x;
-    this.y = this.sender.y;
+    this.ally = (this.sender.team === this.game.currentPlayer.team);
+    this.x = this.sender.x + (this.ally ? 80 : -80);
+    this.y = this.sender.y - 35;
     this.o = 0;
 
     this.createPath();
