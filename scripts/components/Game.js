@@ -31,11 +31,16 @@ module.exports = class Game extends React.Component {
     this.backCanvas = this.refs.background.getDOMNode();
     this.ctxBackCanvas = this.backCanvas.getContext('2d');
 
+    this.boatsCanvas = this.refs.boats.getDOMNode();
+    this.ctxBoats = this.boatsCanvas.getContext('2d');
+
     this.canvas = this.refs.viewbox.getDOMNode();
     this.ctx = this.canvas.getContext('2d');
 
     this.backCanvas.width = window.innerWidth;
     this.backCanvas.height = 600;
+    this.boatsCanvas.width = window.innerWidth;
+    this.boatsCanvas.height = 600;
     this.canvas.width = window.innerWidth;
     this.canvas.height = 600;
     
@@ -63,6 +68,7 @@ module.exports = class Game extends React.Component {
       <div className="game-container">
         <canvas ref="background"></canvas>
         <canvas ref="viewbox"></canvas>
+        <canvas ref="boats"></canvas>
       </div>
     );
   }
