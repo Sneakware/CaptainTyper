@@ -1,8 +1,8 @@
 module.exports = class Bullet {
 
-  animate (duration, cb, delay) {
+  animate (duration, cb, final) {
 
-    if (!delay) { delay = 1 / 40; }
+    var delay = 1 / 40;
 
     clearInterval(this.timer);
     var startTime = new Date;
@@ -13,6 +13,7 @@ module.exports = class Bullet {
       if (percent >= 1) {
         percent = 1;
         clearInterval(this.timer);
+        final();
       }
       var p1 = this.pointAt(percent - 0.01);
       var p2 = this.pointAt(percent + 0.01);
@@ -35,7 +36,7 @@ module.exports = class Bullet {
     (this.x + (this.ally ? 30 : - 30)).toString() + ',' + (this.y - (this.ally ? 50 : -50)).toString() + ' ' +
     this.randomValue(this.receiver.x + (this.ally ? - 100 : 100), this.receiver.x + 10).toString() + ',' +
     (this.receiver.y - this.randomValue(100, 200)).toString() + ' ' +
-    this.randomValue(this.receiver.x + (this.ally ? - 100 : 100), this.receiver.x + 10).toString() + ',' +
+    this.randomValue(this.receiver.x, this.receiver.x + (this.ally ? 110 : - 110)).toString() + ',' +
     (this.receiver.y - 10).toString());
 
     this.pathLength = this.path.getTotalLength();
@@ -50,7 +51,8 @@ module.exports = class Bullet {
     this.game = game;
 
     this.ally = (this.sender.team === this.game.currentPlayer.team);
-    this.x = this.sender.x + (this.ally ? 80 : -80);
+    this.active = true;
+    this.x = this.sender.x + (this.ally ? -20 : 20);
     this.y = this.sender.y - 35;
     this.o = 0;
 
@@ -59,6 +61,9 @@ module.exports = class Bullet {
       this.x = point.x;
       this.y = point.y;
       this.o = angle;
+    }, () => {
+      this.receiver.takeDamage(this.damage);
+      this.active = false;
     });
   }
 
