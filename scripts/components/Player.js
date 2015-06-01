@@ -3,6 +3,10 @@ module.exports = class Player {
   draw () {
     this.game.ctx.save();
 
+    if (this.life === 0 && this.y < this.game.canvas.height) {
+      this.y++;
+    }
+
     if (this.game.teams.indexOf(this.team) !== 0) {
       this.game.ctx.translate(this.x + this.x, this.y - 360);
       this.game.ctx.scale(1, -1);

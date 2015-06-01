@@ -44,6 +44,8 @@ module.exports = class Bullet {
 
   constructor (player, target, damage, game) {
 
+    if (target.life === 0) { return ; }
+
     this.timer = null;
     this.damage = damage;
     this.sender = player;
