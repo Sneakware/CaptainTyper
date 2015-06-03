@@ -7,7 +7,8 @@ module.exports = class Player {
       this.y++;
     }
 
-    if (this.game.teams.indexOf(this.team) !== 0) {
+    var ally = this.game.teams.indexOf(this.team) === 0;
+    if (!ally) {
       this.game.ctx.translate(this.x + this.x, this.y - 360);
       this.game.ctx.scale(1, -1);
       this.game.ctx.rotate(Math.PI);
@@ -58,10 +59,51 @@ module.exports = class Player {
     this.game.ctx.stroke();
 
     this.game.ctx.restore();
+
+    if (this.life > 0) {
+      var text = this.name + ' - ' + this.life;
+      var xCenter = this.x + (ally ? - 55 : 55);
+
+      this.game.ctx.fillStyle = 'white';
+      this.game.ctx.fillText(text, xCenter - this.game.ctx.measureText(text).width / 2, this.y - 60);
+
+      if (this.team !== this.game.currentPlayer.team &&
+          this.game.currentPlayer.target === this.game.teams[1].players.indexOf(this)) {
+        this.game.ctx.beginPath();
+        this.game.ctx.moveTo(xCenter - 5, this.y - 85);
+        this.game.ctx.lineTo(xCenter + 5, this.y - 85);
+        this.game.ctx.lineTo(xCenter, this.y - 75);
+        this.game.ctx.fill();
+      }
+    }
   }
 
   takeDamage (damage) {
+    if (this.life === 0) { return ; }
     this.life = (this.life - damage > 0) ? this.life - damage: 0;
+    if (this.life === 0) {
+
+      var aliveTeamMates = this.team.players.filter(player => { return player.life > 0; });
+
+      if (aliveTeamMates.length === 0) {
+        this.game.end(this.game.currentPlayer.team === this.team);
+        return ;
+      }
+
+      var ennemyTeam = this.game.teams[this.game.teams.indexOf(this.team) === 1 ? 0 : 1];
+
+      ennemyTeam.players.forEach(player => {
+        if (player.target === this.team.players.indexOf(this)) {
+          player.target = this.team.players.indexOf(aliveTeamMates[0]);
+        }
+      });
+    }
+  }
+
+  keyPress (e) {
+    if (e.keyCode === 13) {
+      this.target = (this.game.teams[1].players.length - 1 <= this.target ? 0 : this.target + 1);
+    }
   }
 
   constructor (name, x, team, game) {
@@ -74,6 +116,11 @@ module.exports = class Player {
     this.y = this.game.waterLevel + 10;
     this.name = name;
     this.team = team;
+
+    team.players.push(this);
+    this.target = 0;
+
+    window.addEventListener('keypress', this.keyPress.bind(this), false);
   }
 
 };

@@ -35,7 +35,6 @@ module.exports = class Text extends React.Component {
       if (c === ' ') {
         Utils.dispatcher().dispatch({
           type: 'wordTyped',
-          target: 1,
           damage: word.length
         });
       }
