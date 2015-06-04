@@ -101,8 +101,17 @@ module.exports = class Player {
   }
 
   keyPress (e) {
-    if (e.keyCode === 13) {
+
+    var switchTarget =  () => {
+      var ennemyTeam = this.game.teams[this.game.teams.indexOf(this.team) === 1 ? 0 : 1];
       this.target = (this.game.teams[1].players.length - 1 <= this.target ? 0 : this.target + 1);
+      if (ennemyTeam.players[this.target].life <= 0) {
+        switchTarget();
+      }
+    };
+
+    if (e.keyCode === 13) {
+      switchTarget();
     }
   }
 
