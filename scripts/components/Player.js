@@ -102,6 +102,8 @@ module.exports = class Player {
 
   keyPress (e) {
 
+    if (this !== this.game.currentPlayer) { return ; }
+
     var switchTarget =  () => {
       var ennemyTeam = this.game.teams[this.game.teams.indexOf(this.team) === 1 ? 0 : 1];
       this.target = (this.game.teams[1].players.length - 1 <= this.target ? 0 : this.target + 1);
