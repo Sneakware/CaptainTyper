@@ -1,0 +1,32 @@
+@import 'colors';
+@import 'variables';
+
+*, *:after, *:before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #render, #render > div {
+  height: 100%;
+}
+
+body {
+  background-color: $base03;
+  color: $base3;
+  font-family: monospace;
+  position: relative;
+}
+
+canvas {
+  display: block;
+}
+
+.home-block {
+  width: 100%;
+  height: calc(100% - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}

@@ -3,7 +3,7 @@ var webpack = require('webpack');
 
 module.exports = {
 
-  cache: true,
+  cache: false,
   watch: true,
 
   entry: [
@@ -23,13 +23,13 @@ module.exports = {
         include: [
           path.resolve(__dirname, 'scripts')
         ],
-        loader: 'jsx-loader?insertPragma=React.DOM&harmony'
+        loader: 'babel'
       }, {
-        test: /\.css$/,
+        test: /\.scss$/,
         include: [
           path.resolve(__dirname, 'styles')
         ],
-        loader: 'style-loader!css-loader'
+        loader: 'style!css!sass'
       }
     ]
   }

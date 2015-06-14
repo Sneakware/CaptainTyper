@@ -1,9 +1,11 @@
-module.exports = class Ui {
-  
+'use strict';
+
+export default class Ui {
+
   constructor (game) {
     this.game = game;
   }
-  
+
   draw () {
     this.teamOneCpt = 0;
     this.teamTwoCpt = 0;
@@ -28,5 +30,5 @@ module.exports = class Ui {
       }
     });
   }
-  
-};
+
+}

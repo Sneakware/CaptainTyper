@@ -1,4 +1,6 @@
-module.exports = class Bullet {
+'use strict';
+
+export default class Bullet {
 
   animate (duration, cb, final) {
 
@@ -69,4 +71,4 @@ module.exports = class Bullet {
     });
   }
 
-};
+}

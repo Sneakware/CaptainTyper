@@ -1,0 +1,32 @@
+@import 'colors';
+@import 'variables';
+
+nav {
+  top: 0;
+  border-bottom: 3px dashed $base2;
+  height: $navbar-height;
+  ul {
+    height: 100%;
+    padding: 0 20px;
+    display: flex;
+    list-style-type: none;
+    li {
+      display: flex;
+      align-items: center;
+    }
+    li + li {
+      margin-left: 30px;
+    }
+    a {
+      color: $base2;
+      height: 100%;
+      font-weight: bold;
+      font-size: 1.6em;
+      text-decoration: none;
+      transition: color 0.25s ease-in;
+      &:hover {
+        color: $blue;
+      }
+    }
+  }
+}

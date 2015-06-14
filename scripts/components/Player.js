@@ -1,4 +1,6 @@
-module.exports = class Player {
+'use strict';
+
+export default class Player {
 
   draw () {
     this.game.ctx.save();
@@ -134,4 +136,4 @@ module.exports = class Player {
     window.addEventListener('keypress', this.keyPress.bind(this), false);
   }
 
-};
+}

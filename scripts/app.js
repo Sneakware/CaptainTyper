@@ -1,7 +1,22 @@
-require('../styles/app.css');
+'use strict';
 
-var React = require('react');
+require('../styles/app.scss');
 
-var App = require('./components/App');
+import React from 'react';
+import Router from 'react-router';
+import { Route, NotFoundRoute, HistoryLocation } from 'react-router';
 
-React.render(<App />, document.getElementById('render'));
+import Layout from './Layout';
+import Home from './Home';
+import Game from './Game';
+
+var routes = (
+  <Route path="/" handler={Layout}>
+    <Route path="game" handler={Game}/>
+    <NotFoundRoute handler={Home} />
+  </Route>
+);
+
+Router.run(routes, HistoryLocation, (Root) => {
+  React.render(<Root />, document.getElementById('render'));
+});

@@ -22,7 +22,8 @@ var socketServer = require('http').createServer();
 var io = require('socket.io')(socketServer);
 
 io.on('connection', function (socket){
-  console.log(socket);
+
+  console.log('here');
 
   socket.on('event', function (data) {
   });

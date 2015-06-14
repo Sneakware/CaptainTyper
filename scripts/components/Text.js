@@ -1,8 +1,13 @@
-var React = require('react');
-var moment = require('moment');
-var Utils = require('../Utils');
+'use strict';
 
-module.exports = class Text extends React.Component {
+import React from 'react';
+import moment from 'moment';
+
+import Utils from '../Utils';
+
+var socket = io('localhost:3000');
+
+export default class Text extends React.Component {
 
   getWpm () {
     var time = moment().diff(this.state.startedAt, 's');
@@ -20,7 +25,7 @@ module.exports = class Text extends React.Component {
     var width = this.ctx.measureText(word.slice(0, this.state.position ? this.state.position : 1)).width;
     this.ctx.fillRect(30, this.canvas.height / 2 + 10, width, 5);
   }
-  
+
   keyPress (e) {
     var c = String.fromCharCode(e.keyCode);
     if (c === this.state.text[this.state.currentIndex]) {
@@ -93,7 +98,7 @@ module.exports = class Text extends React.Component {
   }
 
   render () {
-    
+
     if (this.state && this.state.text) { this.draw(); }
 
     return (
@@ -101,4 +106,4 @@ module.exports = class Text extends React.Component {
     )
   }
 
-};
+}

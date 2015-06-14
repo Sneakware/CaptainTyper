@@ -1,12 +1,16 @@
-var React = require('react');
+'use strict';
 
-var Utils = require('../Utils');
-var Ui = require('./Ui');
-var Player = require('./Player');
-var Bullet = require('./Bullet');
+import React from 'react';
 
-module.exports = class Game extends React.Component {
-  
+import Ui     from './Ui';
+import Utils  from '../Utils';
+import Player from './Player';
+import Bullet from './Bullet';
+
+var socket = io('localhost:3000');
+
+export default class View extends React.Component {
+
   initLevel () {
     this.ctxBackCanvas.fillStyle = '#268bd2';
     this.ctxBackCanvas.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -17,7 +21,7 @@ module.exports = class Game extends React.Component {
     this.ctxBackCanvas.fillStyle = '#2aa198';
     this.ctxBackCanvas.fillRect(0, this.waterLevel, this.canvas.width, 5);
   }
-  
+
   draw () {
     if (this.gameEnded) { return ; }
     requestAnimationFrame(() => { this.draw(); });
@@ -56,7 +60,7 @@ module.exports = class Game extends React.Component {
 
     this.gameEnded = false;
     this.waterLevel = this.canvas.height / 2 + 50;
-    
+
     this.initLevel();
 
     this.teams = [{ id: 1, color: 'white', players: [] }, { id: 2, color: 'red', players: [] }];
@@ -76,7 +80,7 @@ module.exports = class Game extends React.Component {
         this.bullets.push(new Bullet(this.currentPlayer, this.teams[1].players[this.currentPlayer.target], msg.damage, this));
       }
     });
-    
+
     this.draw();
   }
 
@@ -89,4 +93,4 @@ module.exports = class Game extends React.Component {
     );
   }
 
-};
+}
