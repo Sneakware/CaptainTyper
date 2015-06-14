@@ -5,8 +5,6 @@ import moment from 'moment';
 
 import Utils from '../Utils';
 
-var socket = io('localhost:3000');
-
 export default class Text extends React.Component {
 
   getWpm () {

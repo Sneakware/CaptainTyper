@@ -7,8 +7,6 @@ import Utils  from '../Utils';
 import Player from './Player';
 import Bullet from './Bullet';
 
-var socket = io('localhost:3000');
-
 export default class View extends React.Component {
 
   initLevel () {
