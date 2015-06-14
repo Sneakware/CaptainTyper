@@ -2,7 +2,7 @@
   "name": "CaptainTyper",
   "version": "0.1.0",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server/server.js"
   },
   "devDependencies": {
     "babel-core": "^5.5.7",
