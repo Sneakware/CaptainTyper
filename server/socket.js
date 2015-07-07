@@ -6,7 +6,6 @@ var _ = require('lodash');
 
 var db = require('mongojs')('mongodb://zavatta:' + process.env.NODE_PASS + '@ds045948.mongolab.com:45948/captaintyper', ['text']);
 
-// var rooms = {};
 var rooms = {
   test: {
     players: []
@@ -22,7 +21,6 @@ io.on('connection', function (socket){
       if (err) { return console.log(err); }
 
       db.text.find().limit(-1).skip();
-
     });
 
     io.to(msg.room).emit({ text: 'yolo' });
@@ -32,13 +30,18 @@ io.on('connection', function (socket){
     socket.emit('list', rooms);
   });
 
+  socket.on('ready', function (msg) {
+    if (!socket.activeRoom || Object.keys(rooms).indexOf(socket.activeRoom) === -1) { return; }
+
+  });
+
   socket.on('create', function (msg) {
 
     if (!_.isObject(msg) || !msg.room || !_.isString(msg.room) ||
         rooms[msg.room]) { return ; }
 
     rooms[msg.room] = {
-      players: [socket.id]
+      players: [{ id: socket.id, ready: false }]
     };
 
     socket.join(msg.room);
@@ -50,28 +53,27 @@ io.on('connection', function (socket){
     if (!_.isObject(msg) || !msg.room || !_.isString(msg.room) ||
         !rooms[msg.room]) { return ; }
 
-    rooms[msg.room].players.push(socket.id);
+    rooms[msg.room].players.push({ id: socket.id, ready: false });
 
-    socket.emit('joined', { msg.player });
+    if (socket.activeRoom) { socket.leave(msg.room); }
+    socket.activeRoom = msg.room;
 
+    socket.emit('joined', msg.player);
     socket.join(msg.room);
 
   });
 
   socket.on('disconnect', function () {
 
-    Object.keys(rooms).forEach(function (name) {
-      var room = rooms[name];
-      if (room.players.indexOf(socket.id) !== -1) {
-        var index = room.players.indexOf(socket.id);
-        if (room.players.length === 1) {
-          // delete or not?
-          room.players.splice(index, 1);
-        } else {
-          room.players.splice(index, 1);
-        }
+    if (socket.activeRoom && rooms[socket.activeRoom]) {
+      var room = rooms[socket.activeRoom];
+      var index = room.players.map(function (p) { return p.id; }).indexOf(socket.id);
+      if (room.players.length === 1) {
+        rooms.players.splice(index, 1);
+      } else {
+        room.players.splice(index, 1);
       }
-    });
+    }
 
   });
 
