@@ -32,6 +32,11 @@ module.exports = {
         loader: 'style!css!sass'
       }
     ]
+  },
+
+  externals: {
+    react: 'React',
+    moment: 'moment'
   }
 
 };

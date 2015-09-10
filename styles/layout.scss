@@ -1,5 +1,6 @@
 @import 'colors';
 @import 'variables';
+@import 'utils';
 
 *, *:after, *:before {
   margin: 0;
@@ -22,11 +23,27 @@ canvas {
   display: block;
 }
 
-.home-block {
-  width: 100%;
-  height: calc(100% - 60px);
+#render > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-centered {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.home--block {
   text-align: center;
+}
+
+.server-list--block {
+  ul {
+    list-style: none;
+  }
+  li {
+    cursor: pointer;
+  }
 }

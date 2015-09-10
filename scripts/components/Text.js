@@ -7,16 +7,25 @@ import Utils from '../Utils';
 
 export default class Text extends React.Component {
 
+  /**
+   * Get word per minute score (little buggy)
+   */
   getWpm () {
     var time = moment().diff(this.state.startedAt, 's');
     var keyCount = this.state.text.slice(0, this.state.currentIndex).length;
     return Math.round((keyCount / 5) / (time / 60));
   }
 
+  /**
+   * Clear all the canvas context
+   */
   clear () {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
+  /**
+   * The cursor under the current word status
+   */
   createCursor () {
     this.ctx.fillStyle = (this.state.position === 0) ? Utils.colors('blue') : Utils.colors('green');
     var word = this.state.text.split(' ')[this.state.currentWord];
@@ -24,6 +33,11 @@ export default class Text extends React.Component {
     this.ctx.fillRect(30, this.canvas.height / 2 + 10, width, 5);
   }
 
+  /**
+   * The keypress event
+   *
+   * @param e {Event}
+   */
   keyPress (e) {
     var c = String.fromCharCode(e.keyCode);
     if (c === this.state.text[this.state.currentIndex]) {
@@ -50,6 +64,9 @@ export default class Text extends React.Component {
     }
   }
 
+  /**
+   * The text draw
+   */
   draw () {
     this.clear();
 
@@ -74,30 +91,68 @@ export default class Text extends React.Component {
     this.createCursor();
   }
 
-  componentDidMount () {
+  /**
+   * Occurs on launch response
+   */
+  launch (payload) {
 
+    this.setState({ launched: true });
+    console.log('launched');
+
+    // Good, init canvas ref
     this.canvas = this.refs.textbox.getDOMNode();
     this.ctx = this.canvas.getContext('2d');
 
     this.canvas.width = window.innerWidth;
     this.canvas.height = 200;
 
-    Utils.doRequest('http://restock.io/api/S').then(function (res) {
-      this.setState({
-        text: res,
-        currentIndex: 0,
-        currentWord: 0,
-        position: 0,
-        errorCount: 0
-      });
-    }.bind(this));
+    // Init basic values
+    this.setState({
+      text: payload.text,
+      currentIndex: 0,
+      currentWord: 0,
+      position: 0,
+      errorCount: 0
+    });
+
+  }
+
+  componentWillMount () {
+    this.setState({ launched: false });
+  }
+
+  componentDidMount () {
+
+    // Events to bind to
+    var events = {
+      launch: this.launch.bind(this)
+    };
+
+    // Register the dispatcher events
+    Utils.dispatcher().register(payload => {
+      if (!events[payload.eventType]) { return console.log('Event not binded'); }
+      events[payload.eventType](payload);
+    });
 
     window.addEventListener('keypress', this.keyPress.bind(this), false);
   }
 
+  /**
+   * Clear event listerner on destroy
+   */
+  componentWillUnmount () {
+    window.removeEventListener('keypress', this.keyPress);
+  }
+
   render () {
 
-    if (this.state && this.state.text) { this.draw(); }
+    if (!this.state.launched) {
+      return (
+        <div>Waiting for game launch</div>
+      );
+    }
+
+    if (this.state.text) { this.draw(); }
 
     return (
       <canvas ref="textbox" className="textbox"></canvas>

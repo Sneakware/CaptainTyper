@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import { Link } from 'react-router';
 
 export default class Navbar extends React.Component {
 
@@ -8,8 +9,8 @@ export default class Navbar extends React.Component {
     return (
       <nav>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/game">Game</a></li>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/game">Game</Link></li>
         </ul>
       </nav>
     );
