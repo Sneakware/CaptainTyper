@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import Utils from './Utils'
+import Utils from './Utils';
 import Text from './components/Text';
 import View from './components/View';
 
@@ -50,8 +50,13 @@ export default class Game extends React.Component {
     this.setState({ serverName: e.target.value });
   }
 
-  switchServer (name) {
-    socket.emit('join', { room: name, player: 'NAME' });
+  switchServer (room) {
+
+    socket.emit('join', {
+      room: room,
+      username: Utils.getUsername()
+    });
+
     this.setState({ logged: true });
   }
 
@@ -77,14 +82,15 @@ export default class Game extends React.Component {
             <ul className="marged-bottom">
               {
                 Object.keys(this.state.servers).map(name => (
-                  <li onClick={ this.switchServer.bind(this, name) }>{name}</li>
+                  <li onClick={ this.switchServer.bind(this, name) }>{ name }</li>
                 ))
               }
             </ul>
             <input
               onChange={ this.changeServerName.bind(this) }
               className="marged-right-sm"
-              type="text"/>
+              type="text"
+            />
             <button onClick={ this.createServer.bind(this) }>Create</button>
           </div>
         </div>

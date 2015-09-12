@@ -8,7 +8,8 @@ var db = require('mongojs')('mongodb://zavatta:' + process.env.NODE_PASS + '@ds0
 
 var rooms = {
   test: {
-    players: []
+    players: [],
+    launched: false
   }
 };
 

@@ -2,6 +2,8 @@ import Flux from 'flux';
 
 var dispatcher = new Flux.Dispatcher();
 
+var _username = 'Anonymous';
+
 module.exports = {
 
   /**
@@ -16,7 +18,7 @@ module.exports = {
    */
   doRequest (url) {
 
-    return new Promise(function (resolve, reject) {
+    return Promise(function (resolve, reject) {
 
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
@@ -39,6 +41,19 @@ module.exports = {
 
   },
 
+  changeUsername (username) {
+    _username = username;
+  },
+
+  getUsername () {
+    return _username;
+  },
+
+  /**
+   * Get color hexa
+   *
+   * @param key {String}
+   */
   colors (key) {
     return {
       back: '#002b36',

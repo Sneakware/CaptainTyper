@@ -1,5 +1,6 @@
 @import 'layout';
 @import 'nav';
+@import 'modal';
 
 .game-container {
   position: relative;
@@ -9,4 +10,3 @@
 .game-container canvas {
   position: absolute;
 }
-

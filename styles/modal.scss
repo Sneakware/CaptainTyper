@@ -1,0 +1,16 @@
+.ReactModal__Content {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  padding: 30px;
+  background-color: #073642;
+  box-shadow: 0 0 10px 1px rgba(black, .3);
+}
+
+.ReactModal__Overlay {
+  perspective: 600;
+  -webkit-perspective: 600;
+  background-color: rgba(black, .4);
+}
