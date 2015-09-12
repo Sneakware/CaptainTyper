@@ -2,6 +2,7 @@
 
 import React from 'react';
 import moment from 'moment';
+import classnames from 'classnames';
 
 import Utils from '../Utils';
 
@@ -97,11 +98,6 @@ export default class Text extends React.Component {
   launch (payload) {
 
     this.setState({ launched: true });
-    console.log('launched');
-
-    // Good, init canvas ref
-    this.canvas = this.refs.textbox.getDOMNode();
-    this.ctx = this.canvas.getContext('2d');
 
     this.canvas.width = window.innerWidth;
     this.canvas.height = 200;
@@ -130,9 +126,12 @@ export default class Text extends React.Component {
 
     // Register the dispatcher events
     Utils.dispatcher().register(payload => {
-      if (!events[payload.eventType]) { return console.log('Event not binded'); }
+      if (!events[payload.eventType]) { return; }
       events[payload.eventType](payload);
     });
+
+    this.canvas = this.refs.textbox.getDOMNode();
+    this.ctx = this.canvas.getContext('2d');
 
     window.addEventListener('keypress', this.keyPress.bind(this), false);
   }
@@ -146,17 +145,19 @@ export default class Text extends React.Component {
 
   render () {
 
-    if (!this.state.launched) {
-      return (
-        <div>Waiting for game launch</div>
-      );
-    }
-
     if (this.state.text) { this.draw(); }
 
+    var canvasClasses = classnames({
+      textbox: true,
+      hide: this.state.launched === false
+    });
+
     return (
-      <canvas ref="textbox" className="textbox"></canvas>
-    )
+      <div>
+        <div className={ this.state.launched ? 'hide' : '' }>Waiting for game launch</div>
+        <canvas ref="textbox" className={ canvasClasses }></canvas>
+      </div>
+    );
   }
 
 }

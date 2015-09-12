@@ -19,6 +19,8 @@ function removeFromRoom (socket) {
     var room = rooms[socket.activeRoom];
     if (!room.players) { return ; }
     var index = room.players.map(function (p) { return p.id; }).indexOf(socket.id);
+
+    // TODO do something different maybe
     if (room.players.length === 1) {
       room.players.splice(index, 1);
     } else {
@@ -88,7 +90,13 @@ io.on('connection', function (socket) {
         rooms[msg.room]) { return ; }
 
     rooms[msg.room] = {
-      players: [{ id: socket.id, ready: false, leader: true }]
+      players: [{
+        id: socket.id,
+        username: msg.username,
+        ready: false,
+        leader: true
+      }],
+      launched: false
     };
 
     socket.join(msg.room);
@@ -105,12 +113,17 @@ io.on('connection', function (socket) {
     if (socket.activeRoom) { removeFromRoom(socket); }
 
     var room = rooms[msg.room];
-    room.players.push({ id: socket.id, ready: false });
+    room.players.push({
+      id: socket.id,
+      username: usermsg.name,
+      ready: false
+    });
+
     if (room.players.length === 1) { room.players[0].leader = true; }
 
     socket.activeRoom = msg.room;
     socket.join(msg.room);
-    socket.emit('joined', msg.player);
+    io.to(msg.room).emit('join', { username: msg.username });
 
   });
 

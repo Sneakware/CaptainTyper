@@ -42,7 +42,12 @@ export default class Game extends React.Component {
 
   createServer () {
     if (!this.state.serverName.length) { return ; }
-    socket.emit('create', { room: this.state.serverName });
+
+    socket.emit('create', {
+      room: this.state.serverName,
+      username: Utils.getUsername()
+    });
+
     this.setState({ logged: true, serverName: '' });
   }
 
